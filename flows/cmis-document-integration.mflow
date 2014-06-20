@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="cmis-document-integration">
+    <global-element name="CMIS" type="http://www.mulesoft.org/schema/mule/cmis/config" entity-id="CMIS#1">
+        <properties>
+            <property name="baseUrl" value="http://cmis.demo.nuxeo.org/nuxeo/atom/cmis"/>
+            <property name="username" value="Administrator"/>
+            <property name="connectionTimeout"/>
+            <property name="useAlfrescoExtension"/>
+            <property name="name" value="nuxeo"/>
+            <property name="useCookies"/>
+            <property name="cxfPortProvider"/>
+            <property name="repositoryId" value="default"/>
+            <property name="password" value="Administrator"/>
+            <property name="auxiliary;index" value="1"/>
+            <property name="endpoint"/>
+        </properties>
+    </global-element>
+    <global-element name="Property Placeholder" type="http://www.springframework.org/schema/context/property-placeholder" entity-id="Property Placeholder#1">
+        <properties>
+            <property name="properties-ref"/>
+            <property name="order"/>
+            <property name="location" value="common.properties"/>
+            <property name="local-override"/>
+            <property name="system-properties-mode"/>
+            <property name="file-encoding"/>
+            <property name="auxiliary;index" value="2"/>
+            <property name="ignore-unresolvable"/>
+            <property name="ignore-resource-not-found"/>
+        </properties>
+    </global-element>
+    <flow SubFlow="false" name="CMIS" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="a0218f58-6c75-4988-aa68-3994e5ecfb80">
+        <properties>
+            <property name="initialState"/>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
+            <property name="auxiliary;index" value="3"/>
+        </properties>
+        <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#1">
+            <graphicalData x="0" y="0" width="0" height="0"/>
+            <endpoint direction="Inbound" name="HTTP" type="http://www.mulesoft.org/schema/mule/http/endpoint" entity-id="HTTP#1">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="port" value="8081"/>
+                    <property name="host" value="localhost"/>
+                    <property name="businessEventsLabel"/>
+                    <property name="followRedirects"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/http/endpoint"/>
+                    <property name="keepAlive"/>
+                    <property name="contentType"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="password"/>
+                    <property name="exchange-pattern" value="request-response"/>
+                    <property name="tracking:enable-default-events"/>
+                    <property name="ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
+                    <property name="address"/>
+                    <property name="path" value="cmis"/>
+                    <property name="encoding"/>
+                    <property name="responseTransformer-refs"/>
+                    <property name="method"/>
+                    <property name="user"/>
+                    <property name="auxiliary;index" value="4"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
+                    <property name="connector-ref"/>
+                </properties>
+                <description></description>
+            </endpoint>
+            <pattern name="Create folder" type="http://www.mulesoft.org/schema/mule/cmis/cmis-connector" entity-id="CMIS#2">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/cmis/get-or-create-folder-by-path"/>
+                    <property name="folderPath" value="/mule-cloud-connector/demo-video"/>
+                    <property name="useCookies"/>
+                    <property name="password"/>
+                    <property name="repositoryId"/>
+                    <property name="endpoint"/>
+                    <property name="baseUrl"/>
+                    <property name="username"/>
+                    <property name="connectionTimeout"/>
+                    <property name="useAlfrescoExtension"/>
+                    <property name="cxfPortProvider"/>
+                    <property name="config-ref" value="nuxeo"/>
+                    <property name="auxiliary;index" value="5"/>
+                </properties>
+            </pattern>
+            <pattern name="Load file" type="http://www.mulesoft.org/schema/mule/scripting/groovyComponent" entity-id="Groovy#1">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="updated"/>
+                    <property name="auxiliary;index" value="6"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/core/refInterceptorStackType;738948496">
+                        <property name="ref" value=""/>
+                    </property-collection>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/scripting/script;1600275132">
+                        <property name="text" value="import java.io.FileInputStream;&#xA;return new FileInputStream(&quot;${path.to.jpg}&quot;);"/>
+                        <property name="auxiliary;index" value="7"/>
+                    </property-collection>
+                </properties>
+                <description></description>
+            </pattern>
+            <pattern name="Create document by path from content" type="http://www.mulesoft.org/schema/mule/cmis/cmis-connector" entity-id="CMIS#3">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="versioningState" value="NONE"/>
+                    <property name="content-ref"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/cmis/create-document-by-path-from-content"/>
+                    <property name="useCookies"/>
+                    <property name="folderPath" value="/mule-cloud-connector/demo-video"/>
+                    <property name="repositoryId"/>
+                    <property name="password"/>
+                    <property name="endpoint"/>
+                    <property name="baseUrl"/>
+                    <property name="username"/>
+                    <property name="connectionTimeout"/>
+                    <property name="useAlfrescoExtension"/>
+                    <property name="filename" value="pic.jpg"/>
+                    <property name="force"/>
+                    <property name="cxfPortProvider"/>
+                    <property name="config-ref" value="nuxeo"/>
+                    <property name="objectType" value="cmis:document"/>
+                    <property name="auxiliary;index" value="8"/>
+                    <property name="mimeType" value="image/jpg"/>
+                </properties>
+            </pattern>
+            <pattern name="Object to JSON" type="http://www.mulesoft.org/schema/mule/json/object-to-json-transformer" entity-id="Object to JSON#1">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="sourceClass"/>
+                    <property name="returnClass"/>
+                    <property name="ignoreBadInput"/>
+                    <property name="encoding"/>
+                    <property name="mapper-ref"/>
+                    <property name="auxiliary;index" value="9"/>
+                    <property name="mimeType"/>
+                </properties>
+            </pattern>
+        </lane>
+    </flow>
+</mule-configuration>
